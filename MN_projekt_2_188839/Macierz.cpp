@@ -44,14 +44,29 @@ template <class t> void Macierz<t>::wypelnij(t liczba) {
     }
 }
 
+template <class t> Macierz<t> Macierz<t>::dodaj(Macierz<t> drugaMacierz) {
+    int wiersze = this->getWiersze();
+    int kolumny = this->getKolumny();
+    Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
+    rezultat.wypelnij(0);
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            rezultat.setCell(i, j, (this->getCell(i, j) + drugaMacierz.getCell(i, j)));
+        }
+    }
+    return rezultat;
+}
+
 template <class t> Macierz<t> Macierz<t>::mnoz(Macierz<t> drugaMacierz) {
-	Macierz rezultat = new Macierz(this->getWiersze(), drugaMacierz->getKolumny());
+	Macierz<t> rezultat = Macierz<t>(this->getWiersze(), drugaMacierz.getKolumny());
     rezultat.wypelnij((t)0);
+    double wynik = 0;
 	for (int i = 0; i < this->getWiersze(); i++) {
-		for (int j = 0; j < drugaMacierz->getKolumny(); j++) {
-			for (int k = 0; k < drugaMacierz->getKolumny(); k++) {
-				rezultat[i][j] += this->getCell(i, k) * drugaMacierz->getCell(k, j);
+		for (int j = 0; j < drugaMacierz.getKolumny(); j++) {
+			for (int k = 0; k < drugaMacierz.getKolumny(); k++) {
+                wynik += this->getCell(i, k) * drugaMacierz.getCell(k, j);
 			}
+            rezultat.setCell(i, j, wynik);
 		}
 	}
 	return rezultat;
@@ -162,39 +177,47 @@ template <class t> void Macierz<t>::odwrocDiagonalna() {
     else return;
 }
 
-template <class t> void Macierz<t>::dolnaTrojkatna(Macierz<t> oryginalnaMacierz, int przesuniecie) {
-    int wiersze = oryginalnaMacierz.getWiersze();
-    this->wypelnij((t)0);
+template <class t> Macierz<t> Macierz<t>::dolnaTrojkatna(int przesuniecie) {
+    int wiersze = this->getWiersze();
+    int kolumny = this->getKolumny();
+    Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
+    rezultat.wypelnij((t)0);
     int ile = 1;
     for (int i = 0-przesuniecie; i < wiersze; i++) {
         for (int j = 0; j < ile; j++) {
             if ((0 <= i) && (i <= wiersze) && (0 <= j) && (j <= wiersze)) {
-                this->setCell(i, j, oryginalnaMacierz.getCell(i, j));
+                rezultat.setCell(i, j, this->getCell(i, j));
             }
         }
         ile++;
     }
+    return rezultat;
 }
 
-template <class t> void Macierz<t>::gornaTrojkatna(Macierz<t> oryginalnaMacierz, int przesuniecie) {
-    int wiersze = oryginalnaMacierz.getWiersze();
-    int kolumny = oryginalnaMacierz.getKolumny();
-    this->wypelnij((t)0);
+template <class t> Macierz<t> Macierz<t>::gornaTrojkatna(int przesuniecie) {
+    int wiersze = this->getWiersze();
+    int kolumny = this->getKolumny();
+    Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
+    rezultat.wypelnij((t)0);
     int ile = przesuniecie;
     for (int i = 0; i < wiersze; i++) {
         for (int j = ile; j < kolumny; j++) {
             if ((0 <= i) && (i <= wiersze) && (0 <= j) && (j <= wiersze)) {
-                this->setCell(i, j, oryginalnaMacierz.getCell(i, j));
+                rezultat.setCell(i, j, this->getCell(i, j));
             }
         }
         ile++;
     }
+    return rezultat;
 }
 
-template <class t> void Macierz<t>::diagonala(Macierz<t> oryginalnaMacierz) {
-    int wiersze = oryginalnaMacierz.getWiersze();
-    this->wypelnij((t)0);
+template <class t> Macierz<t> Macierz<t>::diagonala() {
+    int wiersze = this->getWiersze();
+    int kolumny = this->getKolumny();
+    Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
+    rezultat.wypelnij((t)0);
     for (int i = 0; i < wiersze; i++) {
-        this->setCell(i, i, oryginalnaMacierz.getCell(i, i));
+        rezultat.setCell(i, i, this->getCell(i, i));
     }
+    return rezultat;
 }

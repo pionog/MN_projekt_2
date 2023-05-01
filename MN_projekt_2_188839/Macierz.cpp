@@ -3,57 +3,50 @@
 #include "stale.h"
 #include <cmath>
 
-template <class t>
-Macierz<t>::Macierz() {
+template <class t> Macierz<t>::Macierz() {
 		this->wiersze = 5;
 		this->kolumny = 5;
-		this->calkowity = true;
 		this->data = new int* [5];
 		for (int i = 0; i < 5; i++) this->dataI[i] = new int[5];
 	}
 
-template <class t>
-Macierz<t>::Macierz(int wiersze, int kolumny, bool calkowity) {
+template <class t> Macierz<t>::Macierz(int wiersze, int kolumny) {
 		this->wiersze = wiersze;
 		this->kolumny = kolumny;
 		this->data = new t * [wiersze];
 		for (int i = 0; i < wiersze; i++) this->data[i] = new t[kolumny];
 	}
 
-template <class t>
-int Macierz<t>::getWiersze() {
+template <class t> int Macierz<t>::getWiersze() {
 	return this->wiersze;
 }
-template <class t>
-int Macierz<t>::getKolumny() {
+template <class t> int Macierz<t>::getKolumny() {
 	return this->kolumny;
 }
-template <class t>
-bool Macierz<t>::getCalkowity() {
-	return this->calkowity;
-}
-template <class t>
-t Macierz<t>::getData() {
+
+template <class t> t Macierz<t>::getData() {
 	return this->data;
 }
-template <class t>
-t Macierz<t>::getCell(int wiersz, int kolumna) {
+template <class t> t Macierz<t>::getCell(int wiersz, int kolumna) {
 	return this->data[wiersz][kolumna];
 }
-template <class t>
-void Macierz<t>::setCell(int wiersz, int kolumna, t wartosc) {
+template <class t> void Macierz<t>::setCell(int wiersz, int kolumna, t wartosc) {
 	this->data[wiersz][kolumna] = wartosc;
 }
-template <class t>
-Macierz<t> Macierz<t>::mnoz(Macierz drugaMacierz) {
-	bool calkowity = false;
-	if (this->getCalkowity() && drugaMacierz->getCalkowity()) calkowity = true;
-	Macierz rezultat = new Macierz(this->getWiersze(), drugaMacierz->getKolumny(), calkowity);
-	for (int i = 0; i < rezultat.getWiersze(); i++) {
-		for (int j = 0; j < rezultat.getKolumny(); j++) {
-			rezultat.setCell(i, j, 0);
-		}
-	}
+
+template <class t> void Macierz<t>::wypelnij(t liczba) {
+    int wiersze = this->getWiersze();
+    int kolumny = this->getKolumny();
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = 0; j < kolumny; j++) {
+            this->setCell(i, j, liczba);
+        }
+    }
+}
+
+template <class t> Macierz<t> Macierz<t>::mnoz(Macierz<t> drugaMacierz) {
+	Macierz rezultat = new Macierz(this->getWiersze(), drugaMacierz->getKolumny());
+    rezultat.wypelnij((t)0);
 	for (int i = 0; i < this->getWiersze(); i++) {
 		for (int j = 0; j < drugaMacierz->getKolumny(); j++) {
 			for (int k = 0; k < drugaMacierz->getKolumny(); k++) {
@@ -65,8 +58,7 @@ Macierz<t> Macierz<t>::mnoz(Macierz drugaMacierz) {
 }
 
 
-template <class t> 
-void Macierz<t>::drukujMacierz() {
+template <class t> void Macierz<t>::drukuj() {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
 
@@ -133,15 +125,10 @@ void Macierz<t>::drukujMacierz() {
     }
     printf("\n");
 }
-template <class t>
-void Macierz<t>::stworzMacierzA(int a1, int a2, int a3) {
+template <class t> void Macierz<t>::stworzMacierzA(int a1, int a2, int a3) {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
-    for (int i = 0; i < wiersze; i++) {
-        for (int j = 0; j < kolumny; j++) {
-            this->setCell(i, j, 0);
-        }
-    }
+    this->wypelnij((t)0);
     int j = 0;
     for (int i = 0; i < wiersze; i++) {
         if (j - 2 >= 0) this->setCell(i, j-2, a3);
@@ -153,10 +140,61 @@ void Macierz<t>::stworzMacierzA(int a1, int a2, int a3) {
     }
 }
 
-template <class t>
-void Macierz<t>::stworzWektorB() {
+template <class t> void Macierz<t>::stworzWektorB() {
+    int wiersze = this->getWiersze();
+    for (int i = 0; i < wiersze; i++) {
+        this->setCell(i, 0, sin(i * (f + 1)));
+    }
+}
+
+
+template <class t> void Macierz<t>::odwrocDiagonalna() {
+    int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
-    for (int j = 0; j < kolumny; j++) {
-        this->setCell(0, j, sin(j * (f + 1)));
+    double wartosc;
+    if (wiersze == kolumny) {
+        for (int i = 0; i < wiersze; i++) {
+            wartosc = this->getCell(i, i);
+            wartosc = 1 / wartosc;
+            this->setCell(i, i, wartosc);
+        }
+    }
+    else return;
+}
+
+template <class t> void Macierz<t>::dolnaTrojkatna(Macierz<t> oryginalnaMacierz, int przesuniecie) {
+    int wiersze = oryginalnaMacierz.getWiersze();
+    this->wypelnij((t)0);
+    int ile = 1;
+    for (int i = 0-przesuniecie; i < wiersze; i++) {
+        for (int j = 0; j < ile; j++) {
+            if ((0 <= i) && (i <= wiersze) && (0 <= j) && (j <= wiersze)) {
+                this->setCell(i, j, oryginalnaMacierz.getCell(i, j));
+            }
+        }
+        ile++;
+    }
+}
+
+template <class t> void Macierz<t>::gornaTrojkatna(Macierz<t> oryginalnaMacierz, int przesuniecie) {
+    int wiersze = oryginalnaMacierz.getWiersze();
+    int kolumny = oryginalnaMacierz.getKolumny();
+    this->wypelnij((t)0);
+    int ile = przesuniecie;
+    for (int i = 0; i < wiersze; i++) {
+        for (int j = ile; j < kolumny; j++) {
+            if ((0 <= i) && (i <= wiersze) && (0 <= j) && (j <= wiersze)) {
+                this->setCell(i, j, oryginalnaMacierz.getCell(i, j));
+            }
+        }
+        ile++;
+    }
+}
+
+template <class t> void Macierz<t>::diagonala(Macierz<t> oryginalnaMacierz) {
+    int wiersze = oryginalnaMacierz.getWiersze();
+    this->wypelnij((t)0);
+    for (int i = 0; i < wiersze; i++) {
+        this->setCell(i, i, oryginalnaMacierz.getCell(i, i));
     }
 }

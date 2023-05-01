@@ -17,24 +17,33 @@
 //double** stworzWektorB();
 //int** stworzMacierzA(int a1, int a2, int a3);
 //int** mnozMacierze(int** mac1, int wie1, int kol1, int** mac2, int wie2, int kol2);
-//template <class t> void drukujMacierz(t** macierz, int wiersze, int kolumny);
+//template <class t> void drukuj(t** macierz, int wiersze, int kolumny);
 double** obliczDopelnienie(int** macierz, int danyWiersz, int danaKolumna, int rozmiar);
 
 //glowna funkcja
 int main()
 {   
     //zad A
-    Macierz<int> a = Macierz<int>(N, N, true);
+    Macierz<double> a = Macierz<double>(N, N);
     a.stworzMacierzA(a1A, a2, a3);
-    a.drukujMacierz();
-    Macierz<double> b = Macierz<double>(1, N, false);
+    a.drukuj();
+    Macierz<double> b = Macierz<double>(N, 1);
     b.stworzWektorB();
-    b.drukujMacierz();
+    b.drukuj();
+    a.odwrocDiagonalna();
+    Macierz<double> c = Macierz<double>(N, N);
+    c.dolnaTrojkatna(a, -1);
+    a.drukuj();
+    c.drukuj();
+    c.gornaTrojkatna(a, 1);
+    c.drukuj();
+    c.diagonala(a);
+    c.drukuj();
     //double** bA = stworzWektorB();
     //int** AA = stworzMacierzA(a1A, a2, a3);
-    ////drukujMacierz(AA, N, N);
+    ////drukuj(AA, N, N);
     //double** dop = obliczDopelnienie(AA, 5, 5, N);
-    ////drukujMacierz(dop, N, N);
+    ////drukuj(dop, N, N);
     //for(int i = 0; i < N; i++) delete[] AA[i];
     //delete[] AA;
     //for (int i = 0; i < N; i++) delete[] bA[i];
@@ -93,7 +102,7 @@ int main()
 //    return rezultat;
 //}
 
-//template <class t> void drukujMacierz(t** macierz, int wiersze, int kolumny) {
+//template <class t> void drukuj(t** macierz, int wiersze, int kolumny) {
 //    if (wiersze < 6 && kolumny < 6) {
 //        for (int i = 0; i < wiersze; i++) {
 //            for (int j = 0; j < kolumny; j++) {

@@ -9,14 +9,18 @@ private:
 public:
 	Macierz<t>();
 	Macierz<t>(int wiersze, int kolumny);
+	//~Macierz<t>();
 	int getWiersze();
 	int getKolumny();
 	t getData();
 	t getCell(int wiersz, int kolumna);
 	void setCell(int wiersz, int kolumna, t wartosc);
 	void wypelnij(t liczba);
-	Macierz<t> dodaj(Macierz<t> drugaMacierz);
-	Macierz<t> mnoz(Macierz<t> drugaMacierz);
+	//Macierz<t> dodaj(Macierz<t> drugaMacierz);
+	Macierz<t> operator+(Macierz<t> drugaMacierz);
+	//Macierz<t> mnoz(Macierz<t> drugaMacierz);
+	Macierz<t> operator*(Macierz<t> drugaMacierz);
+	Macierz<t> mnozDiagonalnie(Macierz<t> drugaMacierz);
 	void kopiuj(Macierz<t> drugaMacierz);
 	void iloczynSkalarny(t mnoznik);
 	double norma();

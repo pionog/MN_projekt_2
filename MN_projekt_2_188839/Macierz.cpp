@@ -44,7 +44,19 @@ template <class t> void Macierz<t>::wypelnij(t liczba) {
     }
 }
 
-template <class t> Macierz<t> Macierz<t>::dodaj(Macierz<t> drugaMacierz) {
+//template <class t> Macierz<t> Macierz<t>::dodaj(Macierz<t> drugaMacierz) {
+//    int wiersze = this->getWiersze();
+//    int kolumny = this->getKolumny();
+//    Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
+//    rezultat.wypelnij(0);
+//    for (int i = 0; i < wiersze; i++) {
+//        for (int j = 0; j < kolumny; j++) {
+//            rezultat.setCell(i, j, (this->getCell(i, j) + drugaMacierz.getCell(i, j)));
+//        }
+//    }
+//    return rezultat;
+//}
+template <class t> Macierz<t> Macierz<t>::operator+(Macierz<t> drugaMacierz){
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
     Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
@@ -57,25 +69,64 @@ template <class t> Macierz<t> Macierz<t>::dodaj(Macierz<t> drugaMacierz) {
     return rezultat;
 }
 
-template <class t> Macierz<t> Macierz<t>::mnoz(Macierz<t> drugaMacierz) {
+//template <class t> Macierz<t> Macierz<t>::mnoz(Macierz<t> drugaMacierz) {
+//    int wiersze1 = this->getWiersze();
+//    //int kolumny1 = this->getKolumny();
+//    int wiersze2 = drugaMacierz.getWiersze();
+//    int kolumny2 = drugaMacierz.getKolumny();
+//	Macierz<t> rezultat = Macierz<t>(wiersze1, kolumny2);
+//    rezultat.wypelnij((t)0);
+//    double wynik = 0;
+//	for (int i = 0; i < wiersze1; i++) {
+//		for (int j = 0; j < kolumny2; j++) {
+//			for (int k = 0; k < wiersze2; k++) {
+//                wynik += this->getCell(i, k) * drugaMacierz.getCell(k, j);
+//			}
+//            rezultat.setCell(i, j, wynik);
+//            wynik = 0;
+//		}
+//	}
+//	return rezultat;
+//}
+
+template <class t> Macierz<t> Macierz<t>::operator*(Macierz<t> drugaMacierz) {
     int wiersze1 = this->getWiersze();
     //int kolumny1 = this->getKolumny();
     int wiersze2 = drugaMacierz.getWiersze();
     int kolumny2 = drugaMacierz.getKolumny();
-	Macierz<t> rezultat = Macierz<t>(wiersze1, kolumny2);
+    Macierz<t> rezultat = Macierz<t>(wiersze1, kolumny2);
     rezultat.wypelnij((t)0);
     double wynik = 0;
-	for (int i = 0; i < wiersze1; i++) {
-		for (int j = 0; j < kolumny2; j++) {
-			for (int k = 0; k < wiersze2; k++) {
+    for (int i = 0; i < wiersze1; i++) {
+        for (int j = 0; j < kolumny2; j++) {
+            for (int k = 0; k < wiersze2; k++) {
                 wynik += this->getCell(i, k) * drugaMacierz.getCell(k, j);
-			}
+            }
             rezultat.setCell(i, j, wynik);
             wynik = 0;
-		}
-	}
-	return rezultat;
+        }
+    }
+    return rezultat;
 }
+
+
+//operacha mnoz, tyle ze dla macierzy, ktora jest diagonalna - zdecydowanie szybsza metoda dla wiekszych macierzy diagonalnych
+template <class t> Macierz<t> Macierz<t>::mnozDiagonalnie(Macierz<t> drugaMacierz) {
+    int wiersze1 = this->getWiersze();
+    //int kolumny1 = this->getKolumny();
+    int wiersze2 = drugaMacierz.getWiersze();
+    int kolumny2 = drugaMacierz.getKolumny();
+    Macierz<t> rezultat = Macierz<t>(wiersze1, kolumny2);
+    rezultat.wypelnij((t)0);
+    for (int i = 0; i < wiersze1; i++) {
+        t mnoznik = this->getCell(i, i);
+        for (int j = 0; j < kolumny2; j++) {
+            rezultat.setCell(i, j, drugaMacierz.getCell(i, j) * mnoznik);
+        }
+    }
+    return rezultat;
+}
+
 template <class t> void Macierz<t>::kopiuj(Macierz<t> drugaMacierz) {
     for (int i = 0; i < this->getWiersze(); i++) {
         delete[] this->data[i];
@@ -83,10 +134,10 @@ template <class t> void Macierz<t>::kopiuj(Macierz<t> drugaMacierz) {
     delete[] this->data;
     int wiersze = drugaMacierz.getWiersze();
     int kolumny = drugaMacierz.getKolumny();
-    Macierz<t> kopia = Macierz<t>(wiersze, kolumny);
-    this->data = kopia.data;
     this->wiersze = wiersze;
     this->kolumny = kolumny;
+    this->data = new t * [wiersze];
+    for (int i = 0; i < wiersze; i++) this->data[i] = new t[kolumny];
     for (int i = 0; i < wiersze; i++) {
         for (int j = 0; j < kolumny; j++) {
             this->setCell(i, j, drugaMacierz.getCell(i, j));
@@ -264,3 +315,10 @@ template <class t> Macierz<t> Macierz<t>::diagonala() {
     }
     return rezultat;
 }
+
+//template <class t> Macierz<t>::~Macierz<t>() {
+//    for (int i = 0; i < this->getWiersze(); i++) {
+//        delete[] this->data[i];
+//    }
+//    delete[] this->data;
+//}

@@ -17,6 +17,9 @@ public:
 	void wypelnij(t liczba);
 	Macierz<t> dodaj(Macierz<t> drugaMacierz);
 	Macierz<t> mnoz(Macierz<t> drugaMacierz);
+	void kopiuj(Macierz<t> drugaMacierz);
+	void iloczynSkalarny(t mnoznik);
+	double norma();
 	void drukuj();
 	void stworzMacierzA(int a1, int a2, int a3);
 	void stworzWektorB();

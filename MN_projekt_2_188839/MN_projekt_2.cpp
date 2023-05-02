@@ -24,27 +24,62 @@ double** obliczDopelnienie(int** macierz, int danyWiersz, int danaKolumna, int r
 int main()
 {   
     //zad A
-    Macierz<double> a = Macierz<double>(N, N);
-    a.stworzMacierzA(a1A, a2, a3);
-    a.drukuj();
+    
+    //macierz A
+    Macierz<double> A = Macierz<double>(N, N);
+    A.stworzMacierzA(a1A, a2, a3);
+    //wektor b
     Macierz<double> b = Macierz<double>(N, 1);
     b.stworzWektorB();
-    b.drukuj();
-    a.odwrocDiagonalna();
-    Macierz<double> U = a.gornaTrojkatna(1);
-    U.drukuj();
-    printf("---------------\n");
-    Macierz<double> L = a.dolnaTrojkatna(-1);
-    L.drukuj();
-    printf("---------------\n");
-    Macierz<double> D = a.diagonala();
-    D.drukuj();
-    printf("---------------\n");
-    Macierz<double> dodawanie = L.dodaj(U);
-    dodawanie.drukuj();
-    printf("---------------\n");
-    Macierz<double> wynik = a.mnoz(b);
-    wynik.drukuj();
+    //macierz gorna trojkatna U
+    Macierz<double> U = A.gornaTrojkatna(1);
+    //macierz dolna trojkatna L
+    Macierz<double> L = A.dolnaTrojkatna(-1);
+    //macierz diagonalna D
+    Macierz<double> D = A.diagonala();
+    //L+U
+    Macierz<double> LplusU = L.dodaj(U);
+    //D^-1
+    Macierz<double> Dinv = Macierz<double>();
+    Dinv.kopiuj(D);
+    Dinv.odwrocDiagonalna();
+    //-D^-1
+    Macierz<double> minusDinv = Macierz<double>();
+    minusDinv.kopiuj(Dinv);
+    minusDinv.iloczynSkalarny(-1);
+    //-D^-1(L+U)
+    Macierz<double> jacob1 = minusDinv.mnoz(LplusU);
+
+    //D^-1*b
+    Macierz<double> jacob2 = Macierz<double>();
+    jacob2.kopiuj(Dinv);
+    jacob2 = jacob2.mnoz(b);
+
+    
+    Macierz<double> r = Macierz<double>(N, 1);
+    r.wypelnij(1);
+    Macierz<double> res = Macierz<double>();
+    Macierz<double> resy = Macierz<double>(500, 1);
+    resy.wypelnij(0);
+    int i = 0;
+    //-b
+    b.iloczynSkalarny(-1);
+    while (true) {
+        Macierz<double> jacob1R = jacob1.mnoz(r);
+        r = jacob1R.dodaj(jacob2);
+        Macierz<double> Ar = A.mnoz(r);
+        res = (Ar).dodaj(b);
+        double normaRes = res.norma();
+        resy.setCell(i, 0, normaRes);
+        if (normaRes <= norma || normaRes == std::numeric_limits<double>::infinity()) {
+            printf("\nLiczba iteracji metoda Jacobiego:%d\n", i);
+            break;
+        }
+        i++;
+    }
+    b.iloczynSkalarny(-1);
+    resy.drukuj();
+
     //double** bA = stworzWektorB();
     //int** AA = stworzMacierzA(a1A, a2, a3);
     ////drukuj(AA, N, N);

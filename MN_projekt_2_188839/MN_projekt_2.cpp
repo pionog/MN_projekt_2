@@ -1,6 +1,6 @@
 ﻿//-----------------------------------------------------------
 //|                                                         |
-//|     Stworzone przez: Piotr Noga, 188839                 |
+//|     Napisane przez: Piotr Noga, 188839                  |
 //|     Metody Numeryczne Projekt 2                         |
 //|     Uklady rownan liniowych                             |
 //|                                                         |
@@ -29,6 +29,8 @@ int main()
     //wektor b
     Macierz<double> b = Macierz<double>(N, 1);
     b.stworzWektorB();
+
+    //zad B
     jacobi(A, b);
     gauss(A, b);
     Macierz<double> Ac = Macierz<double>(N, N);

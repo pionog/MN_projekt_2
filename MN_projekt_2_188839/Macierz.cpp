@@ -45,11 +45,11 @@ template <class t> void Macierz<t>::wypelnij(t liczba) {
 }
 
 //template <class t> Macierz<t> Macierz<t>::dodaj(Macierz<t> drugaMacierz) {
-//    int wiersze = this->getWiersze();
+//    int m = this->getWiersze();
 //    int kolumny = this->getKolumny();
-//    Macierz<t> rezultat = Macierz<t>(wiersze, kolumny);
+//    Macierz<t> rezultat = Macierz<t>(m, kolumny);
 //    rezultat.wypelnij(0);
-//    for (int i = 0; i < wiersze; i++) {
+//    for (int i = 0; i < m; i++) {
 //        for (int j = 0; j < kolumny; j++) {
 //            rezultat.setCell(i, j, (this->getCell(i, j) + drugaMacierz.getCell(i, j)));
 //        }
@@ -316,6 +316,69 @@ template <class t> Macierz<t> Macierz<t>::diagonala() {
     return rezultat;
 }
 
+//Forward Substitution
+template <class t> Macierz<t> Macierz<t>::fs(Macierz<t> wektorb) {
+    int wiersze = this->getWiersze();
+    Macierz<t> x = Macierz<t>(wiersze, 1);
+    x.wypelnij((t)0);
+
+    for (int i = 0; i < wiersze; i++) {
+        t wartosc = wektorb.getCell(i, 0);
+        
+        for (int j = 0; j < i; j++) {
+            wartosc -= (this->getCell(i, j) * x.getCell(j, 0));
+        }
+        wartosc /= this->getCell(i, i);
+        x.setCell(i, 0, wartosc);
+    }
+    return x;
+}
+
+template <class t> Macierz<t> Macierz<t>::bs(Macierz<t> wektorb) {
+    int wiersze = this->getWiersze();
+    Macierz<t> x = Macierz<t>(wiersze, 1);
+    x.wypelnij((t)0);
+    for (int i = wiersze - 1; i >= 0; i--) {
+        t wartosc = wektorb.getCell(i, 0);
+
+
+        for (int j = i + 1; j < wiersze; j++) {
+            wartosc -= (this->getCell(i, j) * x.getCell(j, 0));
+        }
+        wartosc /= this->getCell(i, i);
+        x.setCell(i, 0, wartosc);
+    }
+    return x;
+}
+
+
+template <class t> Macierz<t> Macierz<t>::LUfactorization(Macierz<t> wektorb) {
+    int m = this->getWiersze();
+    Macierz<t> U = Macierz<t>();
+    //U = A
+    U.kopiuj(*this);
+    Macierz<t> L = Macierz<t>(m, m);
+    L.wypelnij((t)1);
+    //L = I
+    L = L.diagonala();
+    U.drukuj();
+    L.drukuj();
+    for (int k = 1; k < m - 1; k++) {
+        for (int j = k + 1; k < m; k++) {
+            L.setCell(j, k, (U.getCell(j, k) / U.getCell(k, k)));
+            for (int i = k; i < m; i++) {
+                U.setCell(j, i, (U.getCell(j, i) - (L.getCell(j, k) * U.getCell(k, i))));
+            }
+        }
+    }
+    //poprawic to
+    printf("///\\\\\\\n");
+    U.drukuj();
+    L.drukuj();
+    Macierz<t> y = L.fs(wektorb);
+    Macierz<t> x = U.bs(y);
+    return x;
+}
 //template <class t> Macierz<t>::~Macierz<t>() {
 //    for (int i = 0; i < this->getWiersze(); i++) {
 //        delete[] this->data[i];

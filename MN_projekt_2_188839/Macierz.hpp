@@ -31,4 +31,7 @@ public:
 	Macierz<t> dolnaTrojkatna(int przesuniecie);
 	Macierz<t> gornaTrojkatna(int przesuniecie);
 	Macierz<t> diagonala();
+	Macierz<t> fs(Macierz<t> wektorb);
+	Macierz<t> bs(Macierz<t> wektorb);
+	Macierz<t> LUfactorization(Macierz<t> wektorb);
 };

@@ -16,6 +16,7 @@
 
 //deklaracja funkcji
 template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb);
+template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wektorb);
 
 //glowna funkcja
 int main()
@@ -29,12 +30,14 @@ int main()
     Macierz<double> b = Macierz<double>(N, 1);
     b.stworzWektorB();
     jacobi(A, b);
+    gauss(A, b);
+    Macierz<double> Ac = Macierz<double>(N, N);
+    Ac.stworzMacierzA(a1C, a2, a3);
+    //jacobi(Ac, b);
+    //gauss(Ac, b);
 
-    /*Macierz<double> gauss1 = D.dodaj(L);
-    gauss1.iloczynSkalarny(-1);
-    Macierz<double> gauss2 = D.dodaj(L);
-
-    gauss2 = (D + L)\b;*/
+    Macierz<double> x = Ac.LUfactorization(b);
+    x.drukuj();
 
 }
 
@@ -66,36 +69,81 @@ template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
     Macierz<double> r = Macierz<double>(macierzA.getWiersze(), 1);
     r.wypelnij(1);
     Macierz<double> res = Macierz<double>();
-    Macierz<double> resy = Macierz<double>(500, 1);
+    Macierz<double> resy = Macierz<double>(maksymalnaLiczbaIteracji, 1);
     resy.wypelnij(0);
     int i = 0;
+    double normaRes = 0;
     //-b
     wektorb.iloczynSkalarny(-1);
     while (true) {
         r = (jacob1 * r) + jacob2;
         res = (macierzA * r) + wektorb;
-        double normaRes = res.norma();
+        normaRes = res.norma();
         resy.setCell(i, 0, normaRes);
-        if (normaRes <= norma || normaRes == std::numeric_limits<double>::infinity()) {
-            printf("Liczba iteracji metoda Jacobiego:%d\n", i);
+        if (normaRes <= norma || normaRes == std::numeric_limits<double>::infinity() || i+1 >= maksymalnaLiczbaIteracji) {
+            if (i+1 >= maksymalnaLiczbaIteracji) {
+                printf("Przekroczono limit iteracji wynoszacy %d.\n", maksymalnaLiczbaIteracji);
+            }
+            else {
+                printf("Liczba iteracji metoda Jacobiego:%d\n", i);
+            }
             break;
+
         }
         i++;
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto difference = end - start;
     double duration = std::chrono::duration<double, std::milli>(difference).count();
-    printf("Czas potrzebny do wyliczenia rozwiazania: %f sekund\n", duration / 1000);
+    printf("Czas dzialania: %f sekund\n\n", duration / 1000);
     wektorb.iloczynSkalarny(-1);
-
-
 }
 
-template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wetkorB) {
+template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wektorb) {
+    printf("Rozpoczeto rozwiazywanie ukladu rownan za pomoca metody Gaussa-Seidla.\n");
+    auto start = std::chrono::high_resolution_clock::now();
     //macierz gorna trojkatna U
     Macierz<double> U = macierzA.gornaTrojkatna(1);
     //macierz dolna trojkatna L
     Macierz<double> L = macierzA.dolnaTrojkatna(-1);
     //macierz diagonalna D
     Macierz<double> D = macierzA.diagonala();
+
+    Macierz<double> r = Macierz<double>(macierzA.getWiersze(), 1);
+    r.wypelnij(1);
+    Macierz<double> res = Macierz<double>();
+    Macierz<double> resy = Macierz<double>(500, 1);
+    resy.wypelnij(0);
+    int i = 0;
+    double normaRes = 0;
+
+    Macierz<double> gauss1 = D + L;
+    gauss1.iloczynSkalarny(-1);
+
+    Macierz<double> gauss2 = D + L;
+    gauss2 = gauss2.fs(wektorb);
+
+    wektorb.iloczynSkalarny(-1);
+    while (true) {
+        r = gauss1.fs(U * r) + gauss2;
+        res = (macierzA * r) + wektorb;
+        normaRes = res.norma();
+        resy.setCell(i, 0, normaRes);
+        if (normaRes <= norma || normaRes == std::numeric_limits<double>::infinity() || i+1 >= maksymalnaLiczbaIteracji) {
+            if (i+1 >= maksymalnaLiczbaIteracji) {
+                printf("Przekroczono limit iteracji wynoszacy %d.\n", maksymalnaLiczbaIteracji);
+            }
+            else {
+                printf("Liczba iteracji metoda Gaussa-Seidla:%d\n", i);
+            }
+            break;
+
+        }
+        i++;
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto difference = end - start;
+    double duration = std::chrono::duration<double, std::milli>(difference).count();
+    printf("Czas dzialania: %f sekund\n\n", duration / 1000);
+    wektorb.iloczynSkalarny(-1);
 }

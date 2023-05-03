@@ -10,3 +10,4 @@ const int d = 9;
 const int N = 900 + (c * 10) + d;
 const int f = 8;
 const double norma = 1E-9; //10^(-9)
+const int maksymalnaLiczbaIteracji = 500;

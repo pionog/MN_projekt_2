@@ -11,7 +11,6 @@ public:
 	Macierz<t>(int wiersze, int kolumny);
 	int getWiersze();
 	int getKolumny();
-	t getData();
 	t getCell(int wiersz, int kolumna);
 	void setCell(int wiersz, int kolumna, t wartosc);
 	void wypelnij(t liczba);

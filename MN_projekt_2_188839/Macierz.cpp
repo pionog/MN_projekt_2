@@ -4,37 +4,37 @@
 #include <chrono>
 #include <cmath>
 
+//Tworzenie domyslnej macierzy
 template <class t> Macierz<t>::Macierz() {
 		this->wiersze = 5;
 		this->kolumny = 5;
 		this->data = new t* [5];
 		for (int i = 0; i < 5; i++) this->data[i] = new t[5];
 	}
-
+//Tworzenie macierzy ze wskazana liczba wierszy oraz kolumn
 template <class t> Macierz<t>::Macierz(int wiersze, int kolumny) {
 		this->wiersze = wiersze;
 		this->kolumny = kolumny;
 		this->data = new t * [wiersze];
 		for (int i = 0; i < wiersze; i++) this->data[i] = new t[kolumny];
 	}
-
+//Pobranie liczby wierszy macierzy
 template <class t> int Macierz<t>::getWiersze() {
 	return this->wiersze;
 }
+//Pobranie liczby kolumn macierzy
 template <class t> int Macierz<t>::getKolumny() {
 	return this->kolumny;
 }
-
-template <class t> t Macierz<t>::getData() {
-	return this->data;
-}
+//Pobranie zawartosci danej komorki macierzy
 template <class t> t Macierz<t>::getCell(int wiersz, int kolumna) {
 	return this->data[wiersz][kolumna];
 }
+//Wstawienie liczby w dana komorke macierzy
 template <class t> void Macierz<t>::setCell(int wiersz, int kolumna, t wartosc) {
 	this->data[wiersz][kolumna] = wartosc;
 }
-
+//Wypelnia cala macierz podana liczba
 template <class t> void Macierz<t>::wypelnij(t liczba) {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -44,7 +44,7 @@ template <class t> void Macierz<t>::wypelnij(t liczba) {
         }
     }
 }
-
+//Operacja dodawania macierzy
 template <class t> Macierz<t> Macierz<t>::operator+(Macierz<t> drugaMacierz){
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -57,7 +57,7 @@ template <class t> Macierz<t> Macierz<t>::operator+(Macierz<t> drugaMacierz){
     }
     return rezultat;
 }
-
+//Operacja mnozenia macierzy
 template <class t> Macierz<t> Macierz<t>::operator*(Macierz<t> drugaMacierz) {
     int wiersze1 = this->getWiersze();
     //int kolumny1 = this->getKolumny();
@@ -77,9 +77,7 @@ template <class t> Macierz<t> Macierz<t>::operator*(Macierz<t> drugaMacierz) {
     }
     return rezultat;
 }
-
-
-//operacha mnoz, tyle ze dla macierzy, ktora jest diagonalna - zdecydowanie szybsza metoda dla wiekszych macierzy diagonalnych
+//Operacja mnoz, tyle ze dla macierzy, ktora jest diagonalna - zdecydowanie szybsza metoda dla wiekszych macierzy diagonalnych
 template <class t> Macierz<t> Macierz<t>::mnozDiagonalnie(Macierz<t> drugaMacierz) {
     int wiersze1 = this->getWiersze();
     //int kolumny1 = this->getKolumny();
@@ -95,7 +93,7 @@ template <class t> Macierz<t> Macierz<t>::mnozDiagonalnie(Macierz<t> drugaMacier
     }
     return rezultat;
 }
-
+//Operacja przepisania wskazanej macierzy do tej, ktora wywoluje te metode - tworzenie glebokiej kopii
 template <class t> void Macierz<t>::kopiuj(Macierz<t> drugaMacierz) {
     for (int i = 0; i < this->getWiersze(); i++) {
         delete[] this->data[i];
@@ -113,6 +111,7 @@ template <class t> void Macierz<t>::kopiuj(Macierz<t> drugaMacierz) {
         }
     }
 }
+//Mnozenie zawartosci kazdej komorki macierzy przez dana liczbe
 template <class t> void Macierz<t>::iloczynSkalarny(t mnoznik) {
     for (int i = 0; i < this->getWiersze(); i++) {
         for (int j = 0; j < this->getKolumny(); j++) {
@@ -120,6 +119,7 @@ template <class t> void Macierz<t>::iloczynSkalarny(t mnoznik) {
         }
     }
 }
+//Wyliczenie normy danej macierzy
 template <class t> double Macierz<t>::norma() {
     double kwadrat = 0;
     int wiersze = this->getWiersze();
@@ -136,6 +136,7 @@ template <class t> double Macierz<t>::norma() {
     int n = wiersze * kolumny;
     return (double)sqrt((kwadrat / n));
 }
+//Wyswietlanie macierzy. Jesli rozmiar macierzy przekracza w ktorejs osi 6, to zostana wyswietlone jedynie 5 pierwszych oraz ostatnia komorka w danej osi
 template <class t> void Macierz<t>::drukuj() {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -203,6 +204,7 @@ template <class t> void Macierz<t>::drukuj() {
     }
     printf("\n");
 }
+//Wypelnianie macierzy we wskazany sposob - rozpatrywana macierz A
 template <class t> void Macierz<t>::stworzMacierzA(int a1, int a2, int a3) {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -217,15 +219,14 @@ template <class t> void Macierz<t>::stworzMacierzA(int a1, int a2, int a3) {
         j++;
     }
 }
-
+//Wypelnienie macierzy jako wektor b
 template <class t> void Macierz<t>::stworzWektorB() {
     int wiersze = this->getWiersze();
     for (int i = 0; i < wiersze; i++) {
         this->setCell(i, 0, sin(i * (f + 1)));
     }
 }
-
-
+//Operacja odwracania macierzy diagonalnej poprzez podnoszenie kazdej zawartosci komorek do potegi -1
 template <class t> void Macierz<t>::odwrocDiagonalna() {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -239,7 +240,7 @@ template <class t> void Macierz<t>::odwrocDiagonalna() {
     }
     else return;
 }
-
+//Tworzenie macierzy dolnej trojkatnej z istniejacej macierzy
 template <class t> Macierz<t> Macierz<t>::dolnaTrojkatna(int przesuniecie) {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -256,7 +257,7 @@ template <class t> Macierz<t> Macierz<t>::dolnaTrojkatna(int przesuniecie) {
     }
     return rezultat;
 }
-
+//Tworzenie macierzy gornej trojkatnej z istniejacej macierzy
 template <class t> Macierz<t> Macierz<t>::gornaTrojkatna(int przesuniecie) {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -273,7 +274,7 @@ template <class t> Macierz<t> Macierz<t>::gornaTrojkatna(int przesuniecie) {
     }
     return rezultat;
 }
-
+//Tworzenie macierzy diagonalnej z istniejacej macierzy
 template <class t> Macierz<t> Macierz<t>::diagonala() {
     int wiersze = this->getWiersze();
     int kolumny = this->getKolumny();
@@ -285,7 +286,7 @@ template <class t> Macierz<t> Macierz<t>::diagonala() {
     return rezultat;
 }
 
-//Forward Substitution
+//Operacja Forward Substitution
 template <class t> Macierz<t> Macierz<t>::fs(Macierz<t> wektorb) {
     int wiersze = this->getWiersze();
     Macierz<t> x = Macierz<t>(wiersze, 1);
@@ -302,7 +303,7 @@ template <class t> Macierz<t> Macierz<t>::fs(Macierz<t> wektorb) {
     }
     return x;
 }
-
+//Operacja Backward Substitution
 template <class t> Macierz<t> Macierz<t>::bs(Macierz<t> wektorb) {
     int wiersze = this->getWiersze();
     Macierz<t> x = Macierz<t>(wiersze, 1);
@@ -319,7 +320,7 @@ template <class t> Macierz<t> Macierz<t>::bs(Macierz<t> wektorb) {
     }
     return x;
 }
-
+//Operacja faktoryzacji LU
 template <class t> Macierz<t> Macierz<t>::LUfactorization(Macierz<t> wektorb) {
     printf("Rozpoczeto faktoryzacje LU.\n");
     auto start = std::chrono::high_resolution_clock::now();

@@ -38,8 +38,19 @@ int main()
     //jacobi(Ac, b);
     //gauss(Ac, b);
 
-    Macierz<double> x = Ac.LUfactorization(b);
-    x.drukuj();
+    //Macierz<double> x = Ac.LUfactorization(b);
+    //x.drukuj();
+
+    int rozmiary[7] = { 100,500,1000,2000,3000,5000,10000 };
+    for (int rozmiar : rozmiary) {
+        Macierz<double> Ae = Macierz<double>(rozmiar, rozmiar);
+        Ae.stworzMacierzA(a1A, a2, a3);
+        Macierz<double> be = Macierz<double>(rozmiar, 1);
+        be.stworzWektorB();
+        jacobi(Ae, b);
+        gauss(Ae, b);
+        Ae.LUfactorization(b);
+    }
 
 }
 

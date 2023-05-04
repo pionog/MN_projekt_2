@@ -13,6 +13,7 @@ public:
 	int getKolumny();
 	t getCell(int wiersz, int kolumna);
 	void setCell(int wiersz, int kolumna, t wartosc);
+	void usunMacierz();
 	void wypelnij(t liczba);
 	Macierz<t> operator+(Macierz<t> drugaMacierz);
 	Macierz<t> operator*(Macierz<t> drugaMacierz);

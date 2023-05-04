@@ -34,6 +34,15 @@ template <class t> t Macierz<t>::getCell(int wiersz, int kolumna) {
 template <class t> void Macierz<t>::setCell(int wiersz, int kolumna, t wartosc) {
 	this->data[wiersz][kolumna] = wartosc;
 }
+template <class t> void Macierz<t>::usunMacierz() {
+    int wiersze = this->getWiersze();
+    for (int i = 0; i < wiersze; i++) {
+        delete[] this->data[i];
+    }
+    delete[] this->data;
+    this->wiersze = NULL;
+    this->kolumny = NULL;
+}
 //Wypelnia cala macierz podana liczba
 template <class t> void Macierz<t>::wypelnij(t liczba) {
     int wiersze = this->getWiersze();
@@ -65,7 +74,7 @@ template <class t> Macierz<t> Macierz<t>::operator*(Macierz<t> drugaMacierz) {
     int kolumny2 = drugaMacierz.getKolumny();
     Macierz<t> rezultat = Macierz<t>(wiersze1, kolumny2);
     rezultat.wypelnij((t)0);
-    double wynik = 0;
+    t wynik = 0;
     for (int i = 0; i < wiersze1; i++) {
         for (int j = 0; j < kolumny2; j++) {
             for (int k = 0; k < wiersze2; k++) {
@@ -95,10 +104,11 @@ template <class t> Macierz<t> Macierz<t>::mnozDiagonalnie(Macierz<t> drugaMacier
 }
 //Operacja przepisania wskazanej macierzy do tej, ktora wywoluje te metode - tworzenie glebokiej kopii
 template <class t> void Macierz<t>::kopiuj(Macierz<t> drugaMacierz) {
-    for (int i = 0; i < this->getWiersze(); i++) {
+    this->usunMacierz();
+    /*for (int i = 0; i < this->getWiersze(); i++) {
         delete[] this->data[i];
     }
-    delete[] this->data;
+    delete[] this->data;*/
     int wiersze = drugaMacierz.getWiersze();
     int kolumny = drugaMacierz.getKolumny();
     this->wiersze = wiersze;
@@ -352,6 +362,14 @@ template <class t> Macierz<t> Macierz<t>::LUfactorization(Macierz<t> wektorb) {
     double norma = res.norma();
     printf("Norma faktoryzacji LU wynosi: %.20f\n", norma);
     wektorb.iloczynSkalarny(-1);
+
+    
+    L.usunMacierz();
+    //U.usunMacierz();
+
+    y.usunMacierz();
+
+    res.usunMacierz();
 
     return x;
 }

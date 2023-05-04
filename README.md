@@ -8,6 +8,7 @@
 
 Simple program that is calculating matrixes with various methodes.
 Matrix class and methods belonging to it are self-written by the author of this code.
+Entire code is written in Polish.
 
 ## Polish:
 
@@ -17,6 +18,7 @@ Matrix class and methods belonging to it are self-written by the author of this 
 
 Prosty program do liczenia macierzy różnymi metodami.
 Klasa macierzy jak i metody związane z tą klasą zostały napisane własnoręcznie przez autora tego kodu.
+Cały kod został napisany w języku polskim.
 
 ## License
 

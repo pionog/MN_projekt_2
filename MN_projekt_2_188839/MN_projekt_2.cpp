@@ -10,6 +10,9 @@
 #include <iostream>
 #include <cmath>
 #include <chrono>
+#include <cstdio>
+#include <fstream>
+#include <string>
 #include "Macierz.hpp"
 #include "Macierz.cpp"
 #include "stale.h"
@@ -21,6 +24,11 @@ template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wektorb);
 //glowna funkcja
 int main()
 {
+    std::remove("wyniki.csv");
+    std::ofstream wstep;
+    wstep.open("wyniki.csv");
+    wstep << "method,size,iterations,time\n";
+    wstep.close();
     //zad A
 
     //macierz A
@@ -61,6 +69,7 @@ int main()
 
 template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
     printf("Rozpoczeto rozwiazywanie ukladu rownan za pomoca metody Jacobiego.\n");
+    
     auto start = std::chrono::high_resolution_clock::now();
     //macierz gorna trojkatna U
     Macierz<t> U = macierzA.gornaTrojkatna(1);
@@ -89,7 +98,7 @@ template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
     Macierz<t> res = Macierz<t>();
     Macierz<t> resy = Macierz<t>(maksymalnaLiczbaIteracji, 1);
     resy.wypelnij(0);
-    int i = 0;
+    int i = 1;
     double normaRes = 0;
     //-b
     wektorb.iloczynSkalarny(-1);
@@ -116,6 +125,13 @@ template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
     auto difference = end - start;
     double duration = std::chrono::duration<double, std::milli>(difference).count();
     printf("Czas dzialania: %f sekund\n\n", duration / 1000);
+    std::ofstream plik;
+    plik.open("wyniki.csv", std::ios_base::app);
+    plik << "Ja,"; // inicjaly metody
+    plik << std::to_string(macierzA.getWiersze()) << ","; // rozmiar macierzy przy zalozeniu, ze jest kwadratowa
+    plik << std::to_string(i) << ","; // liczba iteracji
+    plik << std::to_string(duration / 1000) << "\n"; // czas trwania algorytmu
+    plik.close();
     wektorb.iloczynSkalarny(-1);
 
     U.usunMacierz();
@@ -150,7 +166,7 @@ template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wektorb) {
     Macierz<t> res = Macierz<t>();
     Macierz<t> resy = Macierz<t>(500, 1);
     resy.wypelnij(0);
-    int i = 0;
+    int i = 1;
     double normaRes = 0;
 
     Macierz<t> gauss1 = D + L;
@@ -182,6 +198,13 @@ template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wektorb) {
     auto difference = end - start;
     double duration = std::chrono::duration<double, std::milli>(difference).count();
     printf("Czas dzialania: %f sekund\n\n", duration / 1000);
+    std::ofstream plik;
+    plik.open("wyniki.csv", std::ios_base::app);
+    plik << "GS,"; // inicjaly metody
+    plik << std::to_string(macierzA.getWiersze()) << ","; // rozmiar macierzy przy zalozeniu, ze jest kwadratowa
+    plik << std::to_string(i) << ","; // liczba iteracji
+    plik << std::to_string(duration / 1000) << "\n"; // czas trwania algorytmu
+    plik.close();
     wektorb.iloczynSkalarny(-1);
     
     L.usunMacierz();

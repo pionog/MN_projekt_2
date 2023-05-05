@@ -3,6 +3,8 @@
 #include "stale.h"
 #include <chrono>
 #include <cmath>
+#include <string>
+#include <fstream>
 
 //Tworzenie domyslnej macierzy
 template <class t> Macierz<t>::Macierz() {
@@ -356,6 +358,13 @@ template <class t> Macierz<t> Macierz<t>::LUfactorization(Macierz<t> wektorb) {
     auto difference = end - start;
     double duration = std::chrono::duration<double, std::milli>(difference).count();
     printf("Czas dzialania: %f sekund\n\n", duration / 1000);
+    std::ofstream plik;
+    plik.open("wyniki.csv", std::ios_base::app);
+    plik << "LU,"; // inicjaly metody
+    plik << std::to_string(this->getWiersze()) << ","; // rozmiar macierzy przy zalozeniu, ze jest kwadratowa
+    plik << "1,"; // liczba iteracji (w metodzie bezposredniej brak iteracji)
+    plik << std::to_string(duration / 1000) << "\n"; // czas trwania algorytmu
+    plik.close();
 
     wektorb.iloczynSkalarny(-1);
     Macierz<double> res = (*this * x) + wektorb;

@@ -145,8 +145,8 @@ template <class t> double Macierz<t>::norma() {
             jednostka = 0;
         }
     }
-    int n = wiersze * kolumny;
-    return (double)sqrt((kwadrat / n));
+    //int n = wiersze * kolumny;
+    return (double)sqrt(kwadrat);
 }
 //Wyswietlanie macierzy. Jesli rozmiar macierzy przekracza w ktorejs osi 6, to zostana wyswietlone jedynie 5 pierwszych oraz ostatnia komorka w danej osi
 template <class t> void Macierz<t>::drukuj() {

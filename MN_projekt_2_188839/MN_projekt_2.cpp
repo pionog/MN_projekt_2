@@ -12,7 +12,9 @@
 #include <chrono>
 #include <cstdio>
 #include <fstream>
+#include <sstream>
 #include <string>
+#include <iomanip>
 #include "Macierz.hpp"
 #include "Macierz.cpp"
 #include "stale.h"
@@ -60,7 +62,7 @@ int main()
         be.stworzWektorB();
         jacobi(Ae, be);
         gauss(Ae, be);
-        Ae.LUfactorization(be);
+        //Ae.LUfactorization(be);
         Ae.usunMacierz();
         be.usunMacierz();
     }
@@ -100,6 +102,15 @@ template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
     resy.wypelnij(0);
     int i = 1;
     double normaRes = 0;
+
+    std::ofstream normy;
+    std::string nazwaPliku = "Ja_" + std::to_string(macierzA.getWiersze());
+    if (macierzA.getCell(0, 0) == 3) nazwaPliku += "_c";
+    nazwaPliku += ".csv";
+    normy.open(nazwaPliku, std::ios_base::app);
+    normy << "iteration,norm\n";
+    normy.close();
+
     //-b
     wektorb.iloczynSkalarny(-1);
     while (true) {
@@ -107,6 +118,12 @@ template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
         res = (macierzA * r) + wektorb;
         normaRes = res.norma();
         resy.setCell(i, 0, normaRes);
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(15) << normaRes;
+        std::string liczba = ss.str();
+        normy.open(nazwaPliku, std::ios_base::app);
+        normy << i << "," << liczba << "\n";
+        normy.close();
         if (normaRes <= norma || normaRes == std::numeric_limits<double>::infinity() || i+1 >= maksymalnaLiczbaIteracji) {
             if (i+1 >= maksymalnaLiczbaIteracji) {
                 printf("Przekroczono limit iteracji wynoszacy %d.\n", maksymalnaLiczbaIteracji);
@@ -133,6 +150,8 @@ template <class t> void jacobi(Macierz<t> macierzA, Macierz<t> wektorb) {
     plik << std::to_string(duration / 1000) << "\n"; // czas trwania algorytmu
     plik.close();
     wektorb.iloczynSkalarny(-1);
+
+    
 
     U.usunMacierz();
     L.usunMacierz();
@@ -175,12 +194,25 @@ template <class t> void gauss(Macierz<t> macierzA, Macierz<t> wektorb) {
     Macierz<t> gauss2 = D + L;
     gauss2 = gauss2.fs(wektorb);
 
+    std::ofstream normy;
+    std::string nazwaPliku = "GS_" + std::to_string(macierzA.getWiersze());
+    if (macierzA.getCell(0, 0) == 3) nazwaPliku += "_c";
+    nazwaPliku += ".csv";
+    normy.open(nazwaPliku, std::ios_base::app);
+    normy << "iteration,norm\n";
+    normy.close();
     wektorb.iloczynSkalarny(-1);
     while (true) {
         r = gauss1.fs(U * r) + gauss2;
         res = (macierzA * r) + wektorb;
         normaRes = res.norma();
         resy.setCell(i, 0, normaRes);
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(15) << normaRes;
+        std::string liczba = ss.str();
+        normy.open(nazwaPliku, std::ios_base::app);
+        normy << i << "," << liczba << "\n";
+        normy.close();
         if (normaRes <= norma || normaRes == std::numeric_limits<double>::infinity() || i+1 >= maksymalnaLiczbaIteracji) {
             if (i+1 >= maksymalnaLiczbaIteracji) {
                 printf("Przekroczono limit iteracji wynoszacy %d.\n", maksymalnaLiczbaIteracji);
